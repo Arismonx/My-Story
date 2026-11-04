@@ -5,8 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "preview": "npx serve out",
+    "release:patch": "npm version patch -m \"chore(release): v%s\"",
+    "release:minor": "npm version minor -m \"chore(release): v%s\"",
+    "release:major": "npm version major -m \"chore(release): v%s\""
   },
   "dependencies": {
     "next": "16.4.5",
@@ -22,5 +25,9 @@
     "eslint-config-next": "16.4.5",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "description": "My Story – สมุดบันทึก local-first, export .txt/.md, ใช้บนมือถือได้ (PWA)",
+  "engines": {
+    "node": ">=20.9"
   }
 }

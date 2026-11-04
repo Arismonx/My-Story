@@ -1,26 +1,49 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --bg: #faf8f5;
+  --surface: #f0ede8;
+  --fg: #1f1d1a;
+  --muted: #7a746b;
+  --line: #e2ddd5;
+  --accent: #c2410c;
+  --danger: #b91c1c;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg: #16151a;
+    --surface: #222128;
+    --fg: #ece9e4;
+    --muted: #9a958c;
+    --line: #2f2d35;
+    --accent: #f97316;
+    --danger: #f87171;
   }
 }
 
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-noto-thai), system-ui, sans-serif;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+}
+
+@layer components {
+  .btn {
+    @apply rounded-lg px-3 py-1.5 text-sm hover:bg-surface active:scale-95 disabled:opacity-40;
+  }
+  .menu-item {
+    @apply block w-full px-4 py-2.5 text-left text-sm hover:bg-bg;
+  }
 }

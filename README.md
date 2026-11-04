@@ -1,36 +1,32 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# My Story 📓
 
-## Getting Started
+สมุดบันทึกเรื่องราวส่วนตัว ใช้ได้ทั้งคอมพิวเตอร์และมือถือ ข้อมูลเก็บในเครื่องของคุณ
 
-First, run the development server:
+- จดบันทึก บันทึกอัตโนมัติ พร้อมวันที่จดและวันที่แก้ไขล่าสุด
+- ค้นหา, จัดกลุ่มตามวัน
+- Export เป็น `.md` หรือ `.txt` (ทีละโน้ตหรือทั้งหมด)
+- ติดตั้งลงมือถือได้ (PWA) และใช้ออฟไลน์ได้
 
+## เริ่มใช้งาน
 ```bash
+nvm use
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deploy ขึ้น GitHub Pages
+1. push ขึ้น GitHub (branch `main`)
+2. Settings → Pages → Source: **GitHub Actions**
+3. workflow `.github/workflows/deploy.yml` จะ build แล้ว deploy ให้ทุกครั้งที่ push
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ติดตั้งบนมือถือ
+- **Android (Chrome):** เมนู ⋮ → "ติดตั้งแอป" / "เพิ่มลงในหน้าจอหลัก"
+- **iPhone (Safari):** ปุ่มแชร์ → "เพิ่มไปยังหน้าจอโฮม"
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+> ⚠️ โน้ตเก็บในเบราว์เซอร์ของแต่ละเครื่อง ถ้าล้างข้อมูลเว็บไซต์โน้ตจะหาย ให้ export เก็บไว้เป็นระยะ
 
-## Learn More
+## เวอร์ชัน
+ดู [CHANGELOG.md](CHANGELOG.md) · เอกสารออกแบบ [docs/BLUEPRINT.md](docs/BLUEPRINT.md)
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## เจอบัค?
+เขียนลง [docs/BUGS.md](docs/BUGS.md) ใต้ **📥 Inbox** แล้วสั่ง `/fix-bugs` ใน Claude Code
