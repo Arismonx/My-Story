@@ -1,32 +1,34 @@
 # My Story
 
-สมุดบันทึกเรื่องราวส่วนตัว ใช้ได้ทั้งคอมพิวเตอร์และมือถือ ข้อมูลเก็บในเครื่องของคุณ
+**English** | [ภาษาไทย](README.th.md)
 
-- จดบันทึก บันทึกอัตโนมัติ พร้อมวันที่จดและวันที่แก้ไขล่าสุด
-- ค้นหา, จัดกลุ่มตามวัน
-- Export เป็น `.md` หรือ `.txt` (ทีละโน้ตหรือทั้งหมด)
-- ติดตั้งลงมือถือได้ (PWA) และใช้ออฟไลน์ได้
+A personal journal for your stories that works on both desktop and mobile. Your data stays on your own device.
 
-## เริ่มใช้งาน
+- Write notes with autosave, plus created and last-edited dates
+- Search notes and group them by day
+- Export to `.md` or `.txt` (one note or all of them)
+- Install on your phone (PWA) and use it offline
+
+## Getting started
 ```bash
 nvm use
 npm install
 npm run dev
 ```
 
-## Deploy ขึ้น GitHub Pages
-1. push ขึ้น GitHub (branch `main`)
-2. Settings → Pages → Source: **GitHub Actions**
-3. workflow `.github/workflows/deploy.yml` จะ build แล้ว deploy ให้ทุกครั้งที่ push
+## Deploy to GitHub Pages
+1. Push to GitHub (branch `main`)
+2. Go to Settings → Pages → Source: **GitHub Actions**
+3. The `.github/workflows/deploy.yml` workflow builds and deploys on every push
 
-## ติดตั้งบนมือถือ
-- **Android (Chrome):** เมนู ⋮ → "ติดตั้งแอป" / "เพิ่มลงในหน้าจอหลัก"
-- **iPhone (Safari):** ปุ่มแชร์ → "เพิ่มไปยังหน้าจอโฮม"
+## Install on mobile
+- **Android (Chrome):** Menu ⋮ → "Install app" / "Add to Home screen"
+- **iPhone (Safari):** Share button → "Add to Home Screen"
 
-> โน้ตเก็บในเบราว์เซอร์ของแต่ละเครื่อง ถ้าล้างข้อมูลเว็บไซต์โน้ตจะหาย ให้ export เก็บไว้เป็นระยะ
+> Notes are stored in each device's browser. Clearing site data deletes them, so export a backup regularly.
 
-## เวอร์ชัน
-ดู [CHANGELOG.md](CHANGELOG.md) · เอกสารออกแบบ [docs/BLUEPRINT.md](docs/BLUEPRINT.md)
+## Versions
+See [CHANGELOG.md](CHANGELOG.md) · Design document: [docs/BLUEPRINT.md](docs/BLUEPRINT.md)
 
-## เจอบัค?
-เขียนลง [docs/BUGS.md](docs/BUGS.md) ใต้ **📥 Inbox** แล้วสั่ง `/fix-bugs` ใน Claude Code
+## Found a bug?
+Add it to [docs/BUGS.md](docs/BUGS.md) under **📥 Inbox**, then run `/fix-bugs` in Claude Code.
