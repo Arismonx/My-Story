@@ -31,7 +31,7 @@
 Note {
   id: string        // crypto.randomUUID()
   title: string
-  content: string   // ข้อความล้วน (อนาคตอาจเป็น markdown)
+  content: string   // markdown (แสดงผลด้วยปุ่ม "ดูตัวอย่าง")
   createdAt: string // ISO 8601 วันที่จด
   updatedAt: string // ISO 8601 แก้ไขล่าสุด
 }
@@ -43,7 +43,7 @@ IndexedDB: database `my-story` · store `notes` (keyPath `id`, index `updatedAt`
 ```
 src/
   app/            layout, page, manifest (server components, static)
-  components/     NotesApp (state หลัก), NoteList, NoteEditor, ExportMenu, RegisterSW
+  components/     NotesApp (state หลัก), NoteList, NoteEditor, Markdown, ExportMenu, RegisterSW
   hooks/useNotes  CRUD + state, รับ NoteRepository เป็น parameter
   lib/            types, db (IndexedDB), export (md/txt), format (วันที่ไทย)
 ```
@@ -57,9 +57,9 @@ Data flow: `NotesApp → useNotes(repo) → NoteRepository → IndexedDB`
 | ค้นหา | 0.1.0 |
 | Export .md / .txt (เดี่ยว + ทั้งหมด) | 0.1.0 |
 | PWA ใช้ออฟไลน์บนมือถือ | 0.1.0 |
+| Markdown preview (ปุ่ม แก้ไข/ดูตัวอย่าง) | next |
 
 ## 8. Roadmap (ไอเดียฟีเจอร์ถัดไป)
-- [ ] Markdown preview ในหน้าแก้ไข
 - [ ] แท็ก / หมวดหมู่ + กรองตามแท็ก
 - [ ] ปักหมุดโน้ต
 - [ ] Import ไฟล์ `.md` / `.txt` กลับเข้าแอพ
@@ -75,3 +75,4 @@ Data flow: `NotesApp → useNotes(repo) → NoteRepository → IndexedDB`
 | 2026-11-05 | ใช้ IndexedDB แทน Postgres ในเวอร์ชันแรก | GitHub Pages เป็น static hosting รัน DB/server ไม่ได้ |
 | 2026-11-05 | แยก `NoteRepository` interface | เผื่อต่อ Supabase (Postgres) ทีหลังโดยไม่ต้องแก้ UI |
 | 2026-11-05 | ทำเป็น PWA แทนแอพ native | ใช้โค้ดชุดเดียว ติดตั้งบนมือถือได้ทันที |
+| 2026-11-08 | เขียน Markdown renderer เองใน `components/Markdown.tsx` (render เป็น React element ไม่ใช้ innerHTML) | ไม่เพิ่ม dependency, กัน XSS, `content` เก็บเป็น markdown ล้วน จึงไม่ต้อง migrate |

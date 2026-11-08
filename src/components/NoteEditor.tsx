@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import type { Note } from "@/lib/types";
+import { Markdown } from "./Markdown";
 import { formatDateTime } from "@/lib/format";
 import { exportNote } from "@/lib/export";
 import { ExportMenu } from "./ExportMenu";
@@ -13,13 +15,27 @@ interface Props {
 }
 
 export function NoteEditor({ note, onChange, onDelete, onBack }: Props) {
+  const [preview, setPreview] = useState(false);
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-2 border-b border-line px-3 py-2">
-        <button type="button" onClick={onBack} className="btn md:hidden" aria-label="กลับ">
+        <button
+          type="button"
+          onClick={onBack}
+          className="btn md:hidden"
+          aria-label="กลับ"
+        >
           ←
         </button>
         <div className="flex-1" />
+        <button
+          type="button"
+          className="btn min-h-10"
+          aria-pressed={preview}
+          onClick={() => setPreview((p) => !p)}
+        >
+          {preview ? "แก้ไข" : "ดูตัวอย่าง"}
+        </button>
         <ExportMenu label="ส่งออก" onExport={(f) => exportNote(note, f)} />
         <button
           type="button"
@@ -43,22 +59,36 @@ export function NoteEditor({ note, onChange, onDelete, onBack }: Props) {
           <div>
             <dt className="inline">จดเมื่อ </dt>
             <dd className="inline">
-              <time dateTime={note.createdAt}>{formatDateTime(note.createdAt)}</time>
+              <time dateTime={note.createdAt}>
+                {formatDateTime(note.createdAt)}
+              </time>
             </dd>
           </div>
           <div>
             <dt className="inline">แก้ไขล่าสุด </dt>
             <dd className="inline">
-              <time dateTime={note.updatedAt}>{formatDateTime(note.updatedAt)}</time>
+              <time dateTime={note.updatedAt}>
+                {formatDateTime(note.updatedAt)}
+              </time>
             </dd>
           </div>
         </dl>
-        <textarea
-          value={note.content}
-          onChange={(e) => onChange({ content: e.target.value })}
-          placeholder="เขียนเรื่องราวของคุณ…"
-          className="mt-4 min-h-[50vh] w-full flex-1 resize-none bg-transparent leading-relaxed outline-none placeholder:text-muted"
-        />
+        {preview ? (
+          <div className="mt-4 min-h-[50vh] flex-1">
+            {note.content.trim() ? (
+              <Markdown source={note.content} />
+            ) : (
+              <p className="text-muted">ยังไม่มีเนื้อหา</p>
+            )}
+          </div>
+        ) : (
+          <textarea
+            value={note.content}
+            onChange={(e) => onChange({ content: e.target.value })}
+            placeholder="เขียนเรื่องราวของคุณ…"
+            className="mt-4 min-h-[50vh] w-full flex-1 resize-none bg-transparent leading-relaxed outline-none placeholder:text-muted"
+          />
+        )}
       </div>
     </div>
   );
