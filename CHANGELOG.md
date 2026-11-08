@@ -1,30 +1,32 @@
 # Changelog
 
-รูปแบบตาม [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) และเลขเวอร์ชันตาม [Semantic Versioning](https://semver.org/)
+Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and versions follow [Semantic Versioning](https://semver.org/).
 
-- **MAJOR** (x.0.0) – เปลี่ยนแบบไม่เข้ากันกับของเดิม เช่น เปลี่ยนโครงสร้างข้อมูลจนโน้ตเก่าใช้ไม่ได้
-- **MINOR** (0.x.0) – เพิ่มฟีเจอร์ใหม่
-- **PATCH** (0.0.x) – แก้บั๊ก / ปรับเล็กน้อย
+- **MAJOR** (x.0.0) – incompatible changes, e.g. a data structure change that makes old notes unusable
+- **MINOR** (0.x.0) – new features
+- **PATCH** (0.0.x) – bug fixes and small tweaks
+
+Add every user-visible change under `## [Unreleased]`. Reference the issue when there is one, e.g. `(#12)`.
 
 ## [Unreleased]
 
 ## [0.3.0] - 2026-11-08
 
 ### Added
-- ช่องพิมพ์ไฮไลต์เครื่องหมาย Markdown ระหว่างพิมพ์ (`##`, `**`, `>`, `-` เป็นสีส้ม หัวข้อและข้อความ **หนา** แสดงตัวหนา) ให้รู้ว่า Markdown ทำงานอยู่
+- The editor highlights Markdown syntax while you type (`##`, `**`, `>`, `-` in the accent color; headings and `**bold**` text shown bold) so you can tell Markdown is active
 
 ## [0.2.0] - 2026-11-08
 
 ### Added
-- โน้ตรองรับ Markdown (หัวข้อ `#`, **ตัวหนา**, *ตัวเอียง*, ~~ขีดฆ่า~~, `โค้ด`, ลิงก์, รายการ, เช็คลิสต์, อ้างอิง, เส้นคั่น) กดปุ่ม "ดูตัวอย่าง" ในหน้าแก้ไขเพื่อดูผล
+- Notes support Markdown (headings `#`, **bold**, *italic*, ~~strikethrough~~, `code`, links, lists, checklists, quotes, horizontal rules). Tap "ดูตัวอย่าง" (Preview) in the editor to see the result
 
 ## [0.1.0] - 2026-11-05
 
 ### Added
-- จดบันทึก (ชื่อเรื่อง + เนื้อหา) บันทึกอัตโนมัติลง IndexedDB บนเครื่อง
-- บันทึกวันที่ "จดเมื่อ" และ "แก้ไขล่าสุด" ของแต่ละโน้ต รายการจัดกลุ่มตามวันที่จด
-- ค้นหาโน้ตจากชื่อและเนื้อหา
-- Export โน้ตเดียวหรือทั้งหมดเป็น `.md` / `.txt`
-- รองรับมือถือ (responsive) + PWA ติดตั้งลงหน้าจอหลัก ใช้งานออฟไลน์ได้
-- แสดงเลขเวอร์ชันมุมล่างของแอพ
-- Deploy อัตโนมัติขึ้น GitHub Pages ผ่าน GitHub Actions
+- Write notes (title + content) with autosave to IndexedDB on the device
+- Each note records "created" and "last edited" dates; the list is grouped by created day
+- Search notes by title and content
+- Export one note or all notes as `.md` / `.txt`
+- Mobile-friendly (responsive) + installable PWA that works offline
+- App version shown at the bottom of the app
+- Automatic deploy to GitHub Pages via GitHub Actions

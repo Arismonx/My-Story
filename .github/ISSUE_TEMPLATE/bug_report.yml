@@ -1,0 +1,44 @@
+name: Bug report
+description: Something in My Story is broken or behaves wrongly
+labels: [bug]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the problem. Screenshots are welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect instead?
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+  - type: input
+    id: device
+    attributes:
+      label: Device and browser
+      placeholder: e.g. iPhone 13 Safari, Android Chrome, Windows Chrome
+  - type: input
+    id: version
+    attributes:
+      label: App version
+      description: Shown at the bottom left of the app
+      placeholder: e.g. 0.3.0
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - Data loss / app unusable
+        - Works but wrong
+        - Minor / cosmetic
+    validations:
+      required: true

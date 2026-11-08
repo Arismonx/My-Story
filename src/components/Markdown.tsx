@@ -1,8 +1,8 @@
 import { Fragment, type ReactNode } from "react";
 
-// Markdown renderer แบบเบา ไม่พึ่ง library และไม่ใช้ dangerouslySetInnerHTML (ปลอดภัยจาก XSS)
-// รองรับ: # หัวข้อ, **หนา**, *เอียง*, ~~ขีดฆ่า~~, `โค้ด`, ```บล็อกโค้ด```, [ลิงก์](url),
-// > อ้างอิง, - / 1. รายการ, - [ ] เช็คลิสต์, --- เส้นคั่น
+// Lightweight Markdown renderer: no library, no dangerouslySetInnerHTML (safe from XSS).
+// Supports: # headings, **bold**, *italic*, ~~strike~~, `code`, ```code blocks```, [links](url),
+// > quotes, - / 1. lists, - [ ] checklists, --- horizontal rules
 
 const INLINE = /(`[^`\n]+`)|(\*\*[^*\n]+?\*\*|__[^_\n]+?__)|(~~[^~\n]+?~~)|(\*[^*\n]+?\*|(?<![\w])_[^_\n]+?_(?![\w]))|(\[[^\]\n]+\]\([^)\s]+\))/g;
 
@@ -101,7 +101,7 @@ export function Markdown({ source }: { source: string }) {
       const code: string[] = [];
       i++;
       while (i < src.length && !RE.fence.test(src[i])) code.push(src[i++]);
-      i++; // ข้ามบรรทัดปิด
+      i++; // skip the closing fence
       blocks.push(
         <pre key={key} className="overflow-x-auto rounded-lg bg-surface p-3 font-mono text-sm">
           <code>{code.join("\n")}</code>

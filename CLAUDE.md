@@ -2,9 +2,9 @@
 
 # My Story
 
-แอพจดบันทึกแบบ local-first (Next.js static export → GitHub Pages, ข้อมูลอยู่ใน IndexedDB, เป็น PWA ใช้บนมือถือได้)
+A local-first note-taking app (Next.js static export → GitHub Pages, data in IndexedDB, installable PWA for mobile).
 
-**อ่าน [docs/BLUEPRINT.md](docs/BLUEPRINT.md) ก่อนออกแบบหรือแก้โค้ด** ไฟล์นี้มีหลักการ, data model, โครงสร้าง และ roadmap
+**Read [docs/BLUEPRINT.md](docs/BLUEPRINT.md) before designing or changing code.** It holds the principles, data model, structure and roadmap. Contribution rules for humans are in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Commands
 ```bash
@@ -13,30 +13,35 @@ npm run dev           # dev server http://localhost:3000
 npm run lint
 npm run build         # static export → out/
 npm run preview       # serve out/ locally
-NEXT_PUBLIC_BASE_PATH=/my-story npm run build   # จำลอง build แบบ GitHub Pages
+NEXT_PUBLIC_BASE_PATH=/my-story npm run build   # simulate the GitHub Pages build
 ```
 
 ## Rules
-- ต้องเป็น static export ได้เสมอ: ห้ามใช้ Server Actions, cookies, dynamic route handlers, `next/image` แบบ optimize
-- UI เข้าถึงข้อมูลผ่าน `NoteRepository` (`src/lib/types.ts`) เท่านั้น ห้ามเรียก IndexedDB ตรงจาก component
-- เปลี่ยน schema → เพิ่ม `DB_VERSION` ใน `src/lib/db.ts` + migration ที่ไม่ทำให้โน้ตเก่าหาย
-- ข้อความใน UI เป็นภาษาไทย, วันที่ใช้ `src/lib/format.ts`
-- ใช้สีผ่าน token (`bg`, `surface`, `fg`, `muted`, `line`, `accent`, `danger`) ห้าม hardcode สี
-- ทดสอบที่ความกว้าง 360px ทุกครั้งที่แก้ UI
-- **ทุกการเปลี่ยนแปลงที่ผู้ใช้เห็น ต้องเพิ่มบรรทัดใน `CHANGELOG.md` ใต้ `## [Unreleased]`**
-- เลขเวอร์ชันมีที่เดียวคือ `package.json` (แอพอ่านไปแสดงเอง) ห้ามแก้มือ ให้ใช้ skill `/release`
+- Must always stay statically exportable: no Server Actions, cookies, dynamic route handlers, or optimizing `next/image`
+- The UI reaches data only through `NoteRepository` (`src/lib/types.ts`). Never call IndexedDB directly from a component
+- Schema change → bump `DB_VERSION` in `src/lib/db.ts` + a migration that keeps old notes
+- **Language:** UI text is Thai, dates use `src/lib/format.ts`. Everything else (docs, code comments, commit messages, issues, PRs, skills) is English
+- Use colors through tokens (`bg`, `surface`, `fg`, `muted`, `line`, `accent`, `danger`). Never hardcode colors
+- Test at 360px width whenever you change UI
+- **Every user-visible change needs a line in `CHANGELOG.md` under `## [Unreleased]`** (mention the issue number when there is one)
+- The version number lives only in `package.json` (the app reads it). Never edit it by hand, use the `/release` skill
 
-## Skills ของโปรเจคนี้
-- `/add-feature <ไอเดีย>`: เพิ่มฟีเจอร์ตาม blueprint พร้อมอัพเดต CHANGELOG และ BLUEPRINT
-- `/fix-bugs [BUG-xxx]`: อ่าน [docs/BUGS.md](docs/BUGS.md) แล้ว triage, แก้, ย้ายสถานะ, อัพเดต CHANGELOG
-- `/release`: ออกเวอร์ชันใหม่ (semver, changelog, git tag)
+## Skills in this project
+- `/add-feature <idea or #issue>`: add a feature per the blueprint, update CHANGELOG and BLUEPRINT
+- `/fix-issue [#number]`: analyze a GitHub bug issue, fix it, update CHANGELOG
+- `/report-issue <what you noticed>`: analyze a problem or idea and open (or draft) a GitHub issue
+- `/release`: cut a new version (semver, changelog, git tag)
 
-## Bugs
-ผู้ใช้รายงานบัคใน `docs/BUGS.md` (หัวข้อ 📥 Inbox) ถ้าผู้ใช้บอกบัคในแชท ให้จดลงไฟล์นี้ก่อนแก้เสมอ
+## Issues (bugs and feature requests)
+Bugs and feature requests live in **GitHub Issues** (`docs/BUGS.md` no longer exists). Templates are in `.github/ISSUE_TEMPLATE/`.
+- If the user mentions a bug or idea in chat, run `/report-issue` first so it is recorded, then work on it.
+- If you notice a bug or problem while doing something else, do **not** silently fix unrelated things: analyze it and open (or draft) an issue with `/report-issue`, then tell the user.
+- `gh` may not be installed or authenticated on this machine. Then `/report-issue` prints the issue text and a prefilled `issues/new` link for the user to click. Never ask the user to paste tokens into the chat.
 
-## Git workflow (กันลืม)
-- ก่อน commit/merge/release ให้ `git fetch origin` แล้วเช็คว่าอยู่ branch ไหน และ `origin/main` ล้ำหน้าเราไหม
-- **ถ้าผู้ใช้ลืมขั้นตอนใด ให้บอกตรงๆ ก่อนทำต่อ** เช่น อยู่ผิด branch, ยังไม่ fetch, remote มี commit ใหม่, มีไฟล์ยังไม่ commit, ยังไม่ได้ push tag
-- งานใหม่แต่ละอย่างควรแตก branch ใหม่จาก `main` ที่อัพเดตแล้ว (ไม่ใช้ branch เก่าที่ merge ไปแล้วต่อ)
-- tag ที่ push แล้วห้ามลบหรือสร้างใหม่ ถ้ายังไม่ push แก้ได้
-- เครื่องนี้ push ด้วย HTTPS ไม่ได้ (ไม่มี credentials) ผู้ใช้ push เอง ให้ผมเตรียม commit/tag แล้วส่งคำสั่ง push ให้
+## Git workflow
+- Before commit/merge/release run `git fetch origin`, then check the current branch and whether `origin/main` is ahead of us
+- **If the user forgot a step, say so plainly before continuing.** For example: wrong branch, not fetched, remote has new commits, uncommitted files, tag not pushed
+- Start each new piece of work on a new branch from an up-to-date `main` (do not keep building on an old branch that was already merged)
+- Never delete or recreate a tag that was already pushed. An unpushed tag can be fixed
+- Pushing over HTTPS does not work from this machine (no credentials). The user pushes. Prepare the commits/tag and give them the push command
+- Changes from outside contributors arrive as pull requests; CI (`.github/workflows/ci.yml`) must pass

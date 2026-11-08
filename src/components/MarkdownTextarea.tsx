@@ -2,10 +2,10 @@
 
 import { useLayoutEffect, useRef, type ReactNode } from "react";
 
-// ช่องพิมพ์ที่ไฮไลต์เครื่องหมาย Markdown ระหว่างพิมพ์ (เช่น `##` สีส้ม หัวข้อตัวหนา)
-// ใช้เทคนิค textarea โปร่งใสวางทับ <div> ที่ระบายสีข้อความ
-// ข้อควรระวัง: ห้ามเปลี่ยนความกว้างตัวอักษรใน overlay (เช่น font-weight/size จริง)
-// ไม่งั้นเคอร์เซอร์จะเลื่อนไม่ตรงกับตัวหนังสือ ตัวหนาจึงใช้ .md-bold (text-stroke) แทน
+// Textarea that highlights Markdown syntax while typing (e.g. `##` in the accent color, bold headings).
+// Technique: a transparent textarea laid over a <div> that renders the colored text.
+// Caution: never change glyph widths in the overlay (real font-weight/size),
+// otherwise the caret drifts away from the text. Bold uses .md-bold (text-stroke) instead.
 
 const INLINE = /(\*\*[^*\n]+?\*\*)|(`[^`\n]+`)|(~~[^~\n]+?~~)|(\[[^\]\n]+\]\([^)\s]+\))|(\*[^*\n]+?\*)/g;
 
@@ -107,7 +107,7 @@ function highlight(value: string): ReactNode[] {
   });
 }
 
-// ต้องตรงกันทั้ง overlay และ textarea
+// Must be identical for the overlay and the textarea
 const TEXT = "whitespace-pre-wrap break-words text-base leading-relaxed";
 
 interface Props {
@@ -119,7 +119,7 @@ interface Props {
 export function MarkdownTextarea({ value, onChange, placeholder }: Props) {
   const ref = useRef<HTMLTextAreaElement>(null);
 
-  // ขยายความสูงตามเนื้อหา เพื่อให้หน้าเลื่อนทั้งหน้า overlay จะได้ไม่ต้อง sync scroll
+  // Grow with the content so the whole page scrolls and the overlay needs no scroll sync
   useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
