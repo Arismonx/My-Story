@@ -40,7 +40,7 @@ body {
 }
 
 @layer components {
-  /* ตัวหนาเทียมในช่องพิมพ์: ไม่เปลี่ยนความกว้างตัวอักษร เคอร์เซอร์จึงไม่เพี้ยน */
+  /* Fake bold for the editor overlay: keeps glyph widths so the caret stays aligned */
   .md-bold {
     -webkit-text-stroke: 0.6px currentColor;
   }

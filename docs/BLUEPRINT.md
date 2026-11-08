@@ -1,29 +1,30 @@
 # My Story – App Blueprint
 
-> เอกสารพื้นฐานของแอพ อ่านก่อนออกแบบหรือเพิ่มฟีเจอร์ทุกครั้ง และอัพเดตเมื่อสิ่งที่เขียนไว้เปลี่ยน
-> อัพเดตล่าสุด: 2026-11-08 · เวอร์ชันแอพ: 0.3.0
+> The foundation document for the app. Read it before designing or adding any feature, and update it whenever what it describes changes.
+> Last updated: 2026-11-08 · App version: 0.3.0
 
-## 1. แอพนี้คืออะไร
-สมุดบันทึกส่วนตัวสำหรับจดเรื่องราวประจำวัน เปิดได้ทั้งบนคอมพิวเตอร์และมือถือ ข้อมูลอยู่ในเครื่องของผู้ใช้ และ export ออกไปเป็นไฟล์ข้อความได้เสมอ
+## 1. What this app is
+A personal journal for daily stories that works on desktop and mobile. Data stays on the user's device and can always be exported as a text file.
 
-## 2. ผู้ใช้ & ปัญหาที่แก้
-- **ผู้ใช้หลัก:** เจ้าของแอพเอง (ใช้คนเดียว ยังไม่มีระบบบัญชี)
-- **ปัญหา:** อยากจดเร็ว ไม่ต้องล็อกอิน ไม่ต้องกลัวข้อมูลหาย (export ได้) และเห็นว่าจดไว้วันไหน
+## 2. Users & problem
+- **Primary user:** the owner (single user, no accounts yet). Contributions from others are welcome (see [CONTRIBUTING.md](../CONTRIBUTING.md)).
+- **Problem:** write quickly, no login, no fear of losing data (export works), and see when each note was written.
 
-## 3. หลักการออกแบบ (ห้ามละเมิดโดยไม่อัพเดตส่วนนี้)
-1. **Local-first:** ใช้งานได้ทันทีแบบไม่มีเน็ตและไม่มี backend
-2. **ข้อมูลเป็นของผู้ใช้:** ทุกโน้ตต้อง export เป็น `.md` / `.txt` ได้
-3. **Mobile-first:** ทุกหน้าจอต้องใช้นิ้วโป้งกดได้ที่ความกว้าง 360px
-4. **Static hosting:** build เป็นไฟล์ static (`output: "export"`) ลง GitHub Pages ได้ ห้ามใช้ Server Actions / Route Handlers แบบ dynamic / cookies
+## 3. Design principles (do not break without updating this section)
+1. **Local-first:** works immediately, offline, with no backend.
+2. **User owns the data:** every note must be exportable as `.md` / `.txt`.
+3. **Mobile-first:** every screen must be usable with a thumb at 360px width.
+4. **Static hosting:** builds to static files (`output: "export"`) for GitHub Pages. No Server Actions, dynamic Route Handlers, or cookies.
+5. **Thai UI:** all user-facing text in the app is Thai; documentation and code comments are English.
 
 ## 4. Tech stack
-| ส่วน | ใช้ | หมายเหตุ |
+| Part | Used | Notes |
 |---|---|---|
-| Framework | Next.js 16 (App Router, static export) | อ่าน `node_modules/next/dist/docs/` ก่อน เพราะ API เปลี่ยน |
-| UI | React 19 + Tailwind CSS v4 | สีอยู่ใน CSS variables ใน `globals.css` |
-| Storage | IndexedDB (`src/lib/db.ts`) | ผ่าน interface `NoteRepository` |
+| Framework | Next.js 16 (App Router, static export) | Read `node_modules/next/dist/docs/` first, the API has changed |
+| UI | React 19 + Tailwind CSS v4 | Colors live in CSS variables in `globals.css` |
+| Storage | IndexedDB (`src/lib/db.ts`) | Behind the `NoteRepository` interface |
 | Mobile | PWA (`manifest.ts` + `public/sw.js`) | |
-| Hosting | GitHub Pages ผ่าน Actions | `NEXT_PUBLIC_BASE_PATH=/<repo>` |
+| Hosting | GitHub Pages via Actions | `NEXT_PUBLIC_BASE_PATH=/<repo>` |
 | Runtime | Node 22 (`.nvmrc`) | |
 
 ## 5. Data model
@@ -31,50 +32,52 @@
 Note {
   id: string        // crypto.randomUUID()
   title: string
-  content: string   // markdown (แสดงผลด้วยปุ่ม "ดูตัวอย่าง")
-  createdAt: string // ISO 8601 วันที่จด
-  updatedAt: string // ISO 8601 แก้ไขล่าสุด
+  content: string   // Markdown (rendered by the "Preview" button)
+  createdAt: string // ISO 8601, when the note was written
+  updatedAt: string // ISO 8601, last edit
 }
 ```
 IndexedDB: database `my-story` · store `notes` (keyPath `id`, index `updatedAt`) · `DB_VERSION = 1`
-เปลี่ยน schema → เพิ่ม `DB_VERSION` และเขียน migration ใน `onupgradeneeded` ห้ามทำให้โน้ตเก่าหาย
+Changing the schema → bump `DB_VERSION` and write a migration in `onupgradeneeded`. Never lose existing notes.
 
-## 6. โครงสร้างโค้ด
+## 6. Code structure
 ```
 src/
   app/            layout, page, manifest (server components, static)
-  components/     NotesApp (state หลัก), NoteList, NoteEditor, MarkdownTextarea, Markdown, ExportMenu, RegisterSW
-  hooks/useNotes  CRUD + state, รับ NoteRepository เป็น parameter
-  lib/            types, db (IndexedDB), export (md/txt), format (วันที่ไทย)
+  components/     NotesApp (main state), NoteList, NoteEditor, MarkdownTextarea, Markdown, ExportMenu, RegisterSW
+  hooks/useNotes  CRUD + state, takes a NoteRepository as a parameter
+  lib/            types, db (IndexedDB), export (md/txt), format (Thai dates)
 ```
 Data flow: `NotesApp → useNotes(repo) → NoteRepository → IndexedDB`
 
-## 7. ฟีเจอร์ที่มีแล้ว
-| ฟีเจอร์ | เวอร์ชัน |
+## 7. Existing features
+| Feature | Version |
 |---|---|
-| จด/แก้/ลบโน้ต บันทึกอัตโนมัติ | 0.1.0 |
-| วันที่จด + แก้ไขล่าสุด, จัดกลุ่มตามวัน | 0.1.0 |
-| ค้นหา | 0.1.0 |
-| Export .md / .txt (เดี่ยว + ทั้งหมด) | 0.1.0 |
-| PWA ใช้ออฟไลน์บนมือถือ | 0.1.0 |
-| Markdown preview (ปุ่ม แก้ไข/ดูตัวอย่าง) | 0.2.0 |
-| ไฮไลต์ Markdown ในช่องพิมพ์ | 0.3.0 |
+| Write/edit/delete notes with autosave | 0.1.0 |
+| Created + last-edited dates, grouped by day | 0.1.0 |
+| Search | 0.1.0 |
+| Export .md / .txt (single + all) | 0.1.0 |
+| Offline PWA on mobile | 0.1.0 |
+| Markdown preview (Edit/Preview button) | 0.2.0 |
+| Markdown syntax highlighting in the editor | 0.3.0 |
 
-## 8. Roadmap (ไอเดียฟีเจอร์ถัดไป)
-- [ ] แท็ก / หมวดหมู่ + กรองตามแท็ก
-- [ ] ปักหมุดโน้ต
-- [ ] Import ไฟล์ `.md` / `.txt` กลับเข้าแอพ
-- [ ] Backup/restore เป็น JSON (กันข้อมูลหายตอนล้างเบราว์เซอร์)
-- [ ] ปุ่มสลับธีม สว่าง/มืด
-- [ ] ปฏิทิน ดูโน้ตตามวัน
-- [ ] Sync ข้ามเครื่องด้วย Postgres (Supabase): สร้าง `SupabaseRepo implements NoteRepository` + Auth
-- [ ] แนบรูป (เก็บเป็น Blob ใน IndexedDB)
+## 8. Roadmap (ideas for next features)
+Ideas are also tracked as GitHub issues labelled `enhancement`.
+- [ ] Tags / categories + filter by tag
+- [ ] Pin notes
+- [ ] Import `.md` / `.txt` files back into the app
+- [ ] Backup/restore as JSON (protects against clearing the browser)
+- [ ] Light/dark theme toggle
+- [ ] Calendar view of notes by day
+- [ ] Cross-device sync with Postgres (Supabase): `SupabaseRepo implements NoteRepository` + Auth
+- [ ] Attach images (stored as Blobs in IndexedDB)
 
 ## 9. Decision log
-| วันที่ | การตัดสินใจ | เหตุผล |
+| Date | Decision | Reason |
 |---|---|---|
-| 2026-11-05 | ใช้ IndexedDB แทน Postgres ในเวอร์ชันแรก | GitHub Pages เป็น static hosting รัน DB/server ไม่ได้ |
-| 2026-11-05 | แยก `NoteRepository` interface | เผื่อต่อ Supabase (Postgres) ทีหลังโดยไม่ต้องแก้ UI |
-| 2026-11-05 | ทำเป็น PWA แทนแอพ native | ใช้โค้ดชุดเดียว ติดตั้งบนมือถือได้ทันที |
-| 2026-11-08 | เขียน Markdown renderer เองใน `components/Markdown.tsx` (render เป็น React element ไม่ใช้ innerHTML) | ไม่เพิ่ม dependency, กัน XSS, `content` เก็บเป็น markdown ล้วน จึงไม่ต้อง migrate |
-| 2026-11-08 | ไฮไลต์ในช่องพิมพ์ด้วย textarea โปร่งใสทับ overlay และใช้ `.md-bold` (text-stroke) แทน font-weight | font-weight เปลี่ยนความกว้างตัวอักษร ทำให้เคอร์เซอร์เลื่อนไม่ตรง |
+| 2026-11-05 | Use IndexedDB instead of Postgres in the first version | GitHub Pages is static hosting and cannot run a DB/server |
+| 2026-11-05 | Separate the `NoteRepository` interface | Allows adding Supabase (Postgres) later without touching the UI |
+| 2026-11-05 | Build a PWA instead of a native app | One codebase, installable on mobile immediately |
+| 2026-11-08 | Own Markdown renderer in `components/Markdown.tsx` (renders React elements, no innerHTML) | No new dependency, prevents XSS, `content` stays plain Markdown so no migration |
+| 2026-11-08 | Editor highlighting via a transparent textarea over an overlay, bold via `.md-bold` (text-stroke) instead of font-weight | Real font-weight changes glyph width and misaligns the caret |
+| 2026-11-08 | Documentation in English; bugs and feature requests tracked as GitHub issues (replaces `docs/BUGS.md`) | Open the project to outside contributors |

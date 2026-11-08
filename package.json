@@ -2,6 +2,7 @@
   "name": "my-story",
   "version": "0.3.0",
   "private": true,
+  "license": "MIT",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -26,7 +27,7 @@
     "tailwindcss": "^4",
     "typescript": "^5"
   },
-  "description": "My Story – สมุดบันทึก local-first, export .txt/.md, ใช้บนมือถือได้ (PWA)",
+  "description": "My Story – a local-first journal, export .txt/.md, works on mobile (PWA)",
   "engines": {
     "node": ">=20.9"
   }

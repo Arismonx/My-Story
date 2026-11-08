@@ -5,9 +5,12 @@
 A personal journal for your stories that works on both desktop and mobile. Your data stays on your own device.
 
 - Write notes with autosave, plus created and last-edited dates
+- Markdown support with live syntax highlighting and a preview
 - Search notes and group them by day
 - Export to `.md` or `.txt` (one note or all of them)
 - Install on your phone (PWA) and use it offline
+
+> The app's interface is in Thai. Documentation is in English.
 
 ## Getting started
 ```bash
@@ -27,8 +30,14 @@ npm run dev
 
 > Notes are stored in each device's browser. Clearing site data deletes them, so export a backup regularly.
 
+## Found a bug or have an idea?
+Open a [GitHub issue](../../issues/new/choose) and pick the **Bug report** or **Feature request** template.
+
+## Contributing
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow and ground rules, and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for how we work together.
+
 ## Versions
 See [CHANGELOG.md](CHANGELOG.md) · Design document: [docs/BLUEPRINT.md](docs/BLUEPRINT.md)
 
-## Found a bug?
-Add it to [docs/BUGS.md](docs/BUGS.md) under **📥 Inbox**, then run `/fix-bugs` in Claude Code.
+## License
+[MIT](LICENSE). By contributing you agree your contribution is released under the same license.

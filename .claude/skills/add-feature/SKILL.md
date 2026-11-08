@@ -1,42 +1,44 @@
 ---
 name: add-feature
-description: เพิ่มฟีเจอร์ใหม่ให้แอพ My Story ตาม blueprint ใช้เมื่อผู้ใช้ขอเพิ่ม/ปรับฟีเจอร์ เช่น "เพิ่มแท็ก", "ทำ markdown preview", "/add-feature ..." หรือหยิบงานจาก roadmap
-argument-hint: <ฟีเจอร์ที่อยากได้ หรือเว้นว่างเพื่อเลือกจาก roadmap>
+description: Add a new feature to My Story following the blueprint. Use when the user asks to add or change a feature, e.g. "add tags", "add pin", "/add-feature ...", or to pick something from the roadmap or a GitHub issue.
+argument-hint: <feature idea, #issue number, or empty to pick from the roadmap>
 ---
 
 # Add feature – My Story
 
-ฟีเจอร์ที่ขอ: $ARGUMENTS
+Feature: $ARGUMENTS
 
-## 1. เข้าใจบริบท
-1. อ่าน `docs/BLUEPRINT.md` ทั้งไฟล์ (หลักการ, data model, โครงสร้าง, roadmap)
-2. ถ้า `$ARGUMENTS` ว่าง → แสดง roadmap ที่ยังไม่ติ๊ก แล้วให้ผู้ใช้เลือก 1 อย่าง
-3. ตรวจว่าฟีเจอร์ขัดกับ **หลักการออกแบบ (ข้อ 3)** หรือไม่ ถ้าขัด (เช่น ต้องมี server) ให้บอกผู้ใช้พร้อมทางเลือก ก่อนลงมือ
-4. ถ้าแตะ Next.js API ที่ไม่คุ้น → อ่าน `node_modules/next/dist/docs/` ก่อน
+## 1. Understand the context
+1. Read all of `docs/BLUEPRINT.md` (principles, data model, structure, roadmap).
+2. If the argument is an issue number, read it (`gh issue view <n>` if `gh` works, otherwise ask the user to paste it). If the argument is empty, show the unchecked roadmap items and let the user pick one.
+3. If the idea is not recorded as an issue yet, run `/report-issue` to record it first.
+4. Check the feature against **design principles (section 3)**. If it conflicts (e.g. needs a server), tell the user with alternatives before writing code.
+5. If it touches a Next.js API you do not know, read `node_modules/next/dist/docs/` first.
 
-## 2. วางแผนสั้นๆ (บอกผู้ใช้ก่อนเขียนโค้ด)
-- ไฟล์ที่จะสร้าง/แก้
-- data model เปลี่ยนไหม → ถ้าเปลี่ยน: field ใหม่ต้อง optional หรือมี migration ใน `onupgradeneeded` + เพิ่ม `DB_VERSION`
-- ประเภทการเปลี่ยน: feature (minor) / fix (patch) / breaking (major)
+## 2. Plan briefly (tell the user before coding)
+- Files to create/edit
+- Does the data model change? If yes: new fields optional or a migration in `onupgradeneeded` + bump `DB_VERSION`
+- Change type: feature (minor) / fix (patch) / breaking (major)
 
-## 3. ลงมือ
-- logic อยู่ใน `src/lib/` หรือ `src/hooks/`, UI อยู่ใน `src/components/`
-- เข้าถึงข้อมูลผ่าน `NoteRepository` เท่านั้น
-- ข้อความ UI ภาษาไทย, สีใช้ token, ปุ่มบนมือถือสูงอย่างน้อย 40px
-- ถ้า export ได้รับผลกระทบ (เช่น เพิ่ม tags) → อัพเดต `src/lib/export.ts` ให้ข้อมูลใหม่ติดไปด้วย
+## 3. Build
+- Start on a new branch from an up-to-date `main`
+- Logic goes in `src/lib/` or `src/hooks/`, UI in `src/components/`
+- Access data only through `NoteRepository`
+- UI text is Thai, colors via tokens, mobile buttons at least 40px tall
+- If export is affected (e.g. added tags) → update `src/lib/export.ts` so the new data is exported
 
-## 4. ตรวจสอบ
+## 4. Verify
 ```bash
 source ~/.nvm/nvm.sh && nvm use
 npm run lint
 NEXT_PUBLIC_BASE_PATH=/my-story npm run build
 ```
-ทั้งสองต้องผ่าน ถ้าไม่ผ่านให้แก้ก่อน ห้ามรายงานว่าเสร็จ
+Both must pass. Do not report done otherwise.
 
-## 5. บันทึกเอกสาร (ห้ามข้าม)
-1. `CHANGELOG.md` → เพิ่มบรรทัดใต้ `## [Unreleased]` ในหัวข้อ `### Added` / `### Changed` / `### Fixed` / `### Removed`
+## 5. Document (do not skip)
+1. `CHANGELOG.md` → add a line under `## [Unreleased]` in `### Added` / `### Changed` / `### Fixed` / `### Removed` (add `(#issue)` when there is one)
 2. `docs/BLUEPRINT.md`:
-   - ย้ายรายการจาก Roadmap ไปตาราง "ฟีเจอร์ที่มีแล้ว" (ใส่เวอร์ชันเป็น `next`)
-   - อัพเดต Data model / โครงสร้างโค้ด ถ้าเปลี่ยน
-   - ตัดสินใจสำคัญ → เพิ่มแถวใน Decision log
-3. สรุปให้ผู้ใช้: ทำอะไร, ไฟล์ที่แก้, และแนะนำว่าควร `/release` เป็น patch/minor/major
+   - Move the item from Roadmap to the "Existing features" table (version `next`)
+   - Update Data model / code structure if they changed
+   - Important decisions → add a row to the Decision log
+3. Summarize for the user: what was done, files changed, and recommend `/release` as patch/minor/major. If the feature came from an issue, put `Closes #<n>` in the commit body.
