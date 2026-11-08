@@ -33,3 +33,10 @@ NEXT_PUBLIC_BASE_PATH=/my-story npm run build   # จำลอง build แบ�
 
 ## Bugs
 ผู้ใช้รายงานบัคใน `docs/BUGS.md` (หัวข้อ 📥 Inbox) ถ้าผู้ใช้บอกบัคในแชท ให้จดลงไฟล์นี้ก่อนแก้เสมอ
+
+## Git workflow (กันลืม)
+- ก่อน commit/merge/release ให้ `git fetch origin` แล้วเช็คว่าอยู่ branch ไหน และ `origin/main` ล้ำหน้าเราไหม
+- **ถ้าผู้ใช้ลืมขั้นตอนใด ให้บอกตรงๆ ก่อนทำต่อ** เช่น อยู่ผิด branch, ยังไม่ fetch, remote มี commit ใหม่, มีไฟล์ยังไม่ commit, ยังไม่ได้ push tag
+- งานใหม่แต่ละอย่างควรแตก branch ใหม่จาก `main` ที่อัพเดตแล้ว (ไม่ใช้ branch เก่าที่ merge ไปแล้วต่อ)
+- tag ที่ push แล้วห้ามลบหรือสร้างใหม่ ถ้ายังไม่ push แก้ได้
+- เครื่องนี้ push ด้วย HTTPS ไม่ได้ (ไม่มี credentials) ผู้ใช้ push เอง ให้ผมเตรียม commit/tag แล้วส่งคำสั่ง push ให้
