@@ -38,3 +38,6 @@ Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the workfl
 
 ## Versions
 See [CHANGELOG.md](CHANGELOG.md) · Design document: [docs/BLUEPRINT.md](docs/BLUEPRINT.md)
+
+## License
+[MIT](LICENSE). By contributing you agree your contribution is released under the same license.

@@ -38,3 +38,6 @@ npm run dev
 
 ## เวอร์ชัน
 ดู [CHANGELOG.md](CHANGELOG.md) · เอกสารออกแบบ [docs/BLUEPRINT.md](docs/BLUEPRINT.md)
+
+## สัญญาอนุญาต
+[MIT](LICENSE) การส่งโค้ดเข้ามาร่วมพัฒนาถือว่าคุณยินยอมให้เผยแพร่ภายใต้สัญญาอนุญาตเดียวกัน

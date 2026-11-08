@@ -32,5 +32,8 @@ Open a [GitHub issue](../../issues/new/choose) and pick a template. Search exist
 ## Using Claude Code
 The repo ships project skills: `/add-feature`, `/fix-issue`, `/report-issue`. They follow the same rules as this file.
 
+## License
+By contributing you agree that your work is released under the [MIT License](LICENSE).
+
 ## Conduct
 Be respectful. See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
