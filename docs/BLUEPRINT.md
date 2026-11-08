@@ -1,7 +1,7 @@
 # My Story – App Blueprint
 
 > เอกสารพื้นฐานของแอพ อ่านก่อนออกแบบหรือเพิ่มฟีเจอร์ทุกครั้ง และอัพเดตเมื่อสิ่งที่เขียนไว้เปลี่ยน
-> อัพเดตล่าสุด: 2026-11-08 · เวอร์ชันแอพ: 0.2.0
+> อัพเดตล่าสุด: 2026-11-08 · เวอร์ชันแอพ: 0.3.0
 
 ## 1. แอพนี้คืออะไร
 สมุดบันทึกส่วนตัวสำหรับจดเรื่องราวประจำวัน เปิดได้ทั้งบนคอมพิวเตอร์และมือถือ ข้อมูลอยู่ในเครื่องของผู้ใช้ และ export ออกไปเป็นไฟล์ข้อความได้เสมอ
@@ -43,7 +43,7 @@ IndexedDB: database `my-story` · store `notes` (keyPath `id`, index `updatedAt`
 ```
 src/
   app/            layout, page, manifest (server components, static)
-  components/     NotesApp (state หลัก), NoteList, NoteEditor, Markdown, ExportMenu, RegisterSW
+  components/     NotesApp (state หลัก), NoteList, NoteEditor, MarkdownTextarea, Markdown, ExportMenu, RegisterSW
   hooks/useNotes  CRUD + state, รับ NoteRepository เป็น parameter
   lib/            types, db (IndexedDB), export (md/txt), format (วันที่ไทย)
 ```
@@ -58,6 +58,7 @@ Data flow: `NotesApp → useNotes(repo) → NoteRepository → IndexedDB`
 | Export .md / .txt (เดี่ยว + ทั้งหมด) | 0.1.0 |
 | PWA ใช้ออฟไลน์บนมือถือ | 0.1.0 |
 | Markdown preview (ปุ่ม แก้ไข/ดูตัวอย่าง) | 0.2.0 |
+| ไฮไลต์ Markdown ในช่องพิมพ์ | 0.3.0 |
 
 ## 8. Roadmap (ไอเดียฟีเจอร์ถัดไป)
 - [ ] แท็ก / หมวดหมู่ + กรองตามแท็ก
@@ -76,3 +77,4 @@ Data flow: `NotesApp → useNotes(repo) → NoteRepository → IndexedDB`
 | 2026-11-05 | แยก `NoteRepository` interface | เผื่อต่อ Supabase (Postgres) ทีหลังโดยไม่ต้องแก้ UI |
 | 2026-11-05 | ทำเป็น PWA แทนแอพ native | ใช้โค้ดชุดเดียว ติดตั้งบนมือถือได้ทันที |
 | 2026-11-08 | เขียน Markdown renderer เองใน `components/Markdown.tsx` (render เป็น React element ไม่ใช้ innerHTML) | ไม่เพิ่ม dependency, กัน XSS, `content` เก็บเป็น markdown ล้วน จึงไม่ต้อง migrate |
+| 2026-11-08 | ไฮไลต์ในช่องพิมพ์ด้วย textarea โปร่งใสทับ overlay และใช้ `.md-bold` (text-stroke) แทน font-weight | font-weight เปลี่ยนความกว้างตัวอักษร ทำให้เคอร์เซอร์เลื่อนไม่ตรง |
