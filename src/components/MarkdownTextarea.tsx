@@ -1,0 +1,145 @@
+"use client";
+
+import { useLayoutEffect, useRef, type ReactNode } from "react";
+
+// ช่องพิมพ์ที่ไฮไลต์เครื่องหมาย Markdown ระหว่างพิมพ์ (เช่น `##` สีส้ม หัวข้อตัวหนา)
+// ใช้เทคนิค textarea โปร่งใสวางทับ <div> ที่ระบายสีข้อความ
+// ข้อควรระวัง: ห้ามเปลี่ยนความกว้างตัวอักษรใน overlay (เช่น font-weight/size จริง)
+// ไม่งั้นเคอร์เซอร์จะเลื่อนไม่ตรงกับตัวหนังสือ ตัวหนาจึงใช้ .md-bold (text-stroke) แทน
+
+const INLINE = /(\*\*[^*\n]+?\*\*)|(`[^`\n]+`)|(~~[^~\n]+?~~)|(\[[^\]\n]+\]\([^)\s]+\))|(\*[^*\n]+?\*)/g;
+
+const marker = (k: string, t: string) => (
+  <span key={k} className="text-accent">
+    {t}
+  </span>
+);
+
+function inline(text: string, kp: string): ReactNode[] {
+  const out: ReactNode[] = [];
+  let last = 0;
+  let i = 0;
+  for (const m of text.matchAll(INLINE)) {
+    const idx = m.index ?? 0;
+    if (idx > last) out.push(text.slice(last, idx));
+    const s = m[0];
+    const k = `${kp}${i++}`;
+    if (m[1]) {
+      out.push(
+        marker(k + "a", "**"),
+        <span key={k + "b"} className="md-bold">
+          {s.slice(2, -2)}
+        </span>,
+        marker(k + "c", "**"),
+      );
+    } else if (m[2]) {
+      out.push(
+        <span key={k} className="text-accent">
+          {s}
+        </span>,
+      );
+    } else if (m[3]) {
+      out.push(
+        <span key={k} className="text-muted">
+          {s}
+        </span>,
+      );
+    } else if (m[4]) {
+      out.push(
+        <span key={k} className="text-accent underline">
+          {s}
+        </span>,
+      );
+    } else if (m[5]) {
+      out.push(marker(k + "a", "*"), s.slice(1, -1), marker(k + "c", "*"));
+    }
+    last = idx + s.length;
+  }
+  if (last < text.length) out.push(text.slice(last));
+  return out;
+}
+
+function highlight(value: string): ReactNode[] {
+  let inFence = false;
+  return value.split("\n").map((line, n) => {
+    const k = `l${n}-`;
+    let body: ReactNode;
+    if (/^```/.test(line)) {
+      inFence = !inFence;
+      body = <span className="text-muted">{line}</span>;
+    } else if (inFence) {
+      body = <span className="text-muted">{line}</span>;
+    } else {
+      let m: RegExpExecArray | null;
+      if ((m = /^(#{1,6}\s+)(.*)$/.exec(line))) {
+        body = (
+          <>
+            {marker(k + "h", m[1])}
+            <span className="md-bold">{inline(m[2], k)}</span>
+          </>
+        );
+      } else if ((m = /^(>\s?)(.*)$/.exec(line))) {
+        body = (
+          <>
+            {marker(k + "q", m[1])}
+            <span className="text-muted">{inline(m[2], k)}</span>
+          </>
+        );
+      } else if ((m = /^(\s*(?:[-*+]|\d+[.)])\s+)(.*)$/.exec(line))) {
+        body = (
+          <>
+            {marker(k + "u", m[1])}
+            {inline(m[2], k)}
+          </>
+        );
+      } else if (/^\s{0,3}([-*_])(\s*\1){2,}\s*$/.test(line)) {
+        body = <span className="text-accent">{line}</span>;
+      } else {
+        body = inline(line, k);
+      }
+    }
+    return (
+      <span key={n}>
+        {body}
+        {"\n"}
+      </span>
+    );
+  });
+}
+
+// ต้องตรงกันทั้ง overlay และ textarea
+const TEXT = "whitespace-pre-wrap break-words text-base leading-relaxed";
+
+interface Props {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+}
+
+export function MarkdownTextarea({ value, onChange, placeholder }: Props) {
+  const ref = useRef<HTMLTextAreaElement>(null);
+
+  // ขยายความสูงตามเนื้อหา เพื่อให้หน้าเลื่อนทั้งหน้า overlay จะได้ไม่ต้อง sync scroll
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+  }, [value]);
+
+  return (
+    <div className="relative min-h-[50vh] flex-1">
+      <div aria-hidden className={`pointer-events-none absolute inset-0 overflow-hidden ${TEXT}`}>
+        {highlight(value)}
+      </div>
+      <textarea
+        ref={ref}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        spellCheck={false}
+        className={`relative block min-h-[50vh] w-full resize-none overflow-hidden bg-transparent p-0 text-transparent caret-fg outline-none placeholder:text-muted ${TEXT}`}
+      />
+    </div>
+  );
+}

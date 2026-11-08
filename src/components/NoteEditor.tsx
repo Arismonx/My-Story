@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { Note } from "@/lib/types";
 import { Markdown } from "./Markdown";
+import { MarkdownTextarea } from "./MarkdownTextarea";
 import { formatDateTime } from "@/lib/format";
 import { exportNote } from "@/lib/export";
 import { ExportMenu } from "./ExportMenu";
@@ -82,12 +83,13 @@ export function NoteEditor({ note, onChange, onDelete, onBack }: Props) {
             )}
           </div>
         ) : (
-          <textarea
-            value={note.content}
-            onChange={(e) => onChange({ content: e.target.value })}
-            placeholder="เขียนเรื่องราวของคุณ…"
-            className="mt-4 min-h-[50vh] w-full flex-1 resize-none bg-transparent leading-relaxed outline-none placeholder:text-muted"
-          />
+          <div className="mt-4 flex flex-1 flex-col">
+            <MarkdownTextarea
+              value={note.content}
+              onChange={(content) => onChange({ content })}
+              placeholder="เขียนเรื่องราวของคุณ…"
+            />
+          </div>
         )}
       </div>
     </div>
