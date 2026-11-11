@@ -10,6 +10,8 @@ Add every user-visible change under `## [Unreleased]`. Reference the issue when 
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-11
+
 ### Added
 - Markdown tables: the preview renders `| a | b |` tables with column alignment (`:---`, `:---:`, `---:`), scrolling sideways on narrow screens, and the editor highlights table pipes and the separator row
 
