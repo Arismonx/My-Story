@@ -18,7 +18,7 @@ interface Props {
 export function NoteEditor({ note, onChange, onDelete, onBack }: Props) {
   const [preview, setPreview] = useState(false);
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full min-w-0 flex-col">
       <div className="flex items-center gap-2 border-b border-line px-3 py-2">
         <button
           type="button"
@@ -49,7 +49,7 @@ export function NoteEditor({ note, onChange, onDelete, onBack }: Props) {
         </button>
       </div>
 
-      <div className="flex flex-1 flex-col overflow-y-auto px-4 py-4 md:px-8">
+      <div className="flex min-w-0 flex-1 flex-col overflow-y-auto px-4 py-4 md:px-8">
         <input
           value={note.title}
           onChange={(e) => onChange({ title: e.target.value })}
@@ -75,7 +75,7 @@ export function NoteEditor({ note, onChange, onDelete, onBack }: Props) {
           </div>
         </dl>
         {preview ? (
-          <div className="mt-4 min-h-[50vh] flex-1">
+          <div className="mt-4 min-h-[50vh] min-w-0 flex-1">
             {note.content.trim() ? (
               <Markdown source={note.content} />
             ) : (
@@ -83,7 +83,7 @@ export function NoteEditor({ note, onChange, onDelete, onBack }: Props) {
             )}
           </div>
         ) : (
-          <div className="mt-4 flex flex-1 flex-col">
+          <div className="mt-4 flex min-w-0 flex-1 flex-col">
             <MarkdownTextarea
               value={note.content}
               onChange={(content) => onChange({ content })}

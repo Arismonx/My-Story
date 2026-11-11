@@ -94,6 +94,12 @@ function highlight(value: string): ReactNode[] {
         );
       } else if (/^\s{0,3}([-*_])(\s*\1){2,}\s*$/.test(line)) {
         body = <span className="text-accent">{line}</span>;
+      } else if (/^\s*\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)*\|?\s*$/.test(line) && line.includes("|")) {
+        // table delimiter row
+        body = <span className="text-accent">{line}</span>;
+      } else if (line.includes("|")) {
+        // table row: pipes in the accent color (same glyph width, caret stays aligned)
+        body = line.split("|").flatMap((cell, c) => (c === 0 ? [inline(cell, `${k}${c}-`)] : [marker(`${k}p${c}`, "|"), inline(cell, `${k}${c}-`)]));
       } else {
         body = inline(line, k);
       }
@@ -128,7 +134,7 @@ export function MarkdownTextarea({ value, onChange, placeholder }: Props) {
   }, [value]);
 
   return (
-    <div className="relative min-h-[50vh] flex-1">
+    <div className="relative min-h-[50vh] min-w-0 flex-1">
       <div aria-hidden className={`pointer-events-none absolute inset-0 overflow-hidden ${TEXT}`}>
         {highlight(value)}
       </div>

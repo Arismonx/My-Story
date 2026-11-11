@@ -68,7 +68,7 @@ export function NotesApp() {
       </aside>
 
       {/* Editor pane */}
-      <main className={`${selected ? "flex" : "hidden md:flex"} flex-1 flex-col`}>
+      <main className={`${selected ? "flex" : "hidden md:flex"} min-w-0 flex-1 flex-col`}>
         {selected ? (
           <NoteEditor
             key={selected.id}

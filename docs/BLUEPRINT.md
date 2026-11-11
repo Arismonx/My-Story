@@ -60,6 +60,7 @@ Data flow: `NotesApp → useNotes(repo) → NoteRepository → IndexedDB`
 | Offline PWA on mobile | 0.1.0 |
 | Markdown preview (Edit/Preview button) | 0.2.0 |
 | Markdown syntax highlighting in the editor | 0.3.0 |
+| Markdown tables (preview + editor highlighting) | next |
 
 ## 8. Roadmap (ideas for next features)
 Ideas are also tracked as GitHub issues labelled `enhancement`.
@@ -80,4 +81,5 @@ Ideas are also tracked as GitHub issues labelled `enhancement`.
 | 2026-11-05 | Build a PWA instead of a native app | One codebase, installable on mobile immediately |
 | 2026-11-08 | Own Markdown renderer in `components/Markdown.tsx` (renders React elements, no innerHTML) | No new dependency, prevents XSS, `content` stays plain Markdown so no migration |
 | 2026-11-08 | Editor highlighting via a transparent textarea over an overlay, bold via `.md-bold` (text-stroke) instead of font-weight | Real font-weight changes glyph width and misaligns the caret |
+| 2026-11-11 | Tables are parsed in our own `Markdown.tsx` (GFM syntax, wide tables scroll inside their own container) | Keeps the no-dependency renderer; `content` stays plain Markdown so no migration |
 | 2026-11-08 | Documentation in English; bugs and feature requests tracked as GitHub issues (replaces `docs/BUGS.md`) | Open the project to outside contributors |
