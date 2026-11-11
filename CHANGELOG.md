@@ -10,6 +10,9 @@ Add every user-visible change under `## [Unreleased]`. Reference the issue when 
 
 ## [Unreleased]
 
+### Added
+- Import `.md` / `.txt` files: the "นำเข้า" button creates one note per file (multiple files allowed). The title comes from the first `# heading` or the file name, and the metadata block written by our own export is dropped so export → import round-trips cleanly
+
 ## [0.4.0] - 2026-11-11
 
 ### Added

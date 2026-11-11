@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useNotes } from "@/hooks/useNotes";
 import { exportAll } from "@/lib/export";
+import { IMPORT_ACCEPT, IMPORT_MAX_BYTES, parseImported, type NoteDraft } from "@/lib/import";
 import { ExportMenu } from "./ExportMenu";
 import { NoteEditor } from "./NoteEditor";
 import { NoteList } from "./NoteList";
@@ -10,7 +11,7 @@ import { NoteList } from "./NoteList";
 const VERSION = process.env.NEXT_PUBLIC_APP_VERSION;
 
 export function NotesApp() {
-  const { notes, loading, create, update, remove } = useNotes();
+  const { notes, loading, create, importNotes, update, remove } = useNotes();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
 
@@ -30,6 +31,35 @@ export function NotesApp() {
     setSelectedId(note.id);
   };
 
+  const fileInput = useRef<HTMLInputElement>(null);
+
+  const handleImport = async (files: FileList | null) => {
+    const picked = Array.from(files ?? []);
+    if (fileInput.current) fileInput.current.value = ""; // allow picking the same file again
+    if (picked.length === 0) return;
+    const drafts: NoteDraft[] = [];
+    const skipped: string[] = [];
+    for (const f of picked) {
+      if (f.size > IMPORT_MAX_BYTES) {
+        skipped.push(f.name);
+        continue;
+      }
+      try {
+        drafts.push(parseImported(f.name, await f.text()));
+      } catch {
+        skipped.push(f.name);
+      }
+    }
+    if (drafts.length > 0) {
+      const created = await importNotes(drafts);
+      setQuery("");
+      setSelectedId(created.length === 1 ? created[0].id : null);
+    }
+    if (skipped.length > 0) {
+      alert(`นำเข้าไม่ได้ (ไฟล์ใหญ่เกิน 2 MB หรืออ่านไม่ได้):\n${skipped.join("\n")}`);
+    }
+  };
+
   return (
     <div className="flex h-dvh overflow-hidden">
       {/* List pane: full screen on mobile, sidebar on desktop */}
@@ -40,6 +70,17 @@ export function NotesApp() {
       >
         <header className="flex items-center gap-2 px-4 pt-[max(env(safe-area-inset-top),0.75rem)] pb-2">
           <h1 className="flex-1 text-xl font-bold">My Story</h1>
+          <input
+            ref={fileInput}
+            type="file"
+            accept={IMPORT_ACCEPT}
+            multiple
+            hidden
+            onChange={(e) => handleImport(e.target.files)}
+          />
+          <button type="button" className="btn min-h-10" onClick={() => fileInput.current?.click()}>
+            นำเข้า
+          </button>
           <ExportMenu
             label="ส่งออกทั้งหมด"
             disabled={notes.length === 0}

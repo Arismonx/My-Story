@@ -46,7 +46,7 @@ src/
   app/            layout, page, manifest (server components, static)
   components/     NotesApp (main state), NoteList, NoteEditor, MarkdownTextarea, Markdown, ExportMenu, RegisterSW
   hooks/useNotes  CRUD + state, takes a NoteRepository as a parameter
-  lib/            types, db (IndexedDB), export (md/txt), format (Thai dates)
+  lib/            types, db (IndexedDB), export (md/txt), import (md/txt → note), format (Thai dates)
 ```
 Data flow: `NotesApp → useNotes(repo) → NoteRepository → IndexedDB`
 
@@ -61,12 +61,12 @@ Data flow: `NotesApp → useNotes(repo) → NoteRepository → IndexedDB`
 | Markdown preview (Edit/Preview button) | 0.2.0 |
 | Markdown syntax highlighting in the editor | 0.3.0 |
 | Markdown tables (preview + editor highlighting) | 0.4.0 |
+| Import `.md` / `.txt` files as notes | next |
 
 ## 8. Roadmap (ideas for next features)
 Ideas are also tracked as GitHub issues labelled `enhancement`.
 - [ ] Tags / categories + filter by tag
 - [ ] Pin notes
-- [ ] Import `.md` / `.txt` files back into the app
 - [ ] Backup/restore as JSON (protects against clearing the browser)
 - [ ] Light/dark theme toggle
 - [ ] Calendar view of notes by day
@@ -82,4 +82,5 @@ Ideas are also tracked as GitHub issues labelled `enhancement`.
 | 2026-11-08 | Own Markdown renderer in `components/Markdown.tsx` (renders React elements, no innerHTML) | No new dependency, prevents XSS, `content` stays plain Markdown so no migration |
 | 2026-11-08 | Editor highlighting via a transparent textarea over an overlay, bold via `.md-bold` (text-stroke) instead of font-weight | Real font-weight changes glyph width and misaligns the caret |
 | 2026-11-11 | Tables are parsed in our own `Markdown.tsx` (GFM syntax, wide tables scroll inside their own container) | Keeps the no-dependency renderer; `content` stays plain Markdown so no migration |
+| 2026-11-11 | Imported notes get "now" as created/updated time, one note per file | Predictable: they appear at the top of the list instead of vanishing into the past |
 | 2026-11-08 | Documentation in English; bugs and feature requests tracked as GitHub issues (replaces `docs/BUGS.md`) | Open the project to outside contributors |

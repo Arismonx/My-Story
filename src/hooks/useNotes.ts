@@ -39,6 +39,21 @@ export function useNotes(repo: NoteRepository = indexedDbRepo) {
     return note;
   }, [repo, setNotes]);
 
+  const importNotes = useCallback(
+    async (drafts: Pick<Note, "title" | "content">[]) => {
+      const now = Date.now();
+      // Distinct, descending timestamps keep the file order in the list
+      const created: Note[] = drafts.map((d, i) => {
+        const at = new Date(now - i).toISOString();
+        return { id: crypto.randomUUID(), ...d, createdAt: at, updatedAt: at };
+      });
+      setNotes([...created, ...notesRef.current].sort(byUpdatedDesc));
+      await Promise.all(created.map((n) => repo.save(n)));
+      return created;
+    },
+    [repo, setNotes],
+  );
+
   const update = useCallback(
     async (id: string, patch: Partial<Pick<Note, "title" | "content">>) => {
       const current = notesRef.current.find((n) => n.id === id);
@@ -64,5 +79,5 @@ export function useNotes(repo: NoteRepository = indexedDbRepo) {
     [repo, setNotes],
   );
 
-  return { notes, loading, create, update, remove };
+  return { notes, loading, create, importNotes, update, remove };
 }
