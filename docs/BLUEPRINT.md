@@ -1,7 +1,7 @@
 # My Story – App Blueprint
 
 > The foundation document for the app. Read it before designing or adding any feature, and update it whenever what it describes changes.
-> Last updated: 2026-11-11 · App version: 0.4.0
+> Last updated: 2026-11-11 · App version: 0.5.0
 
 ## 1. What this app is
 A personal journal for daily stories that works on desktop and mobile. Data stays on the user's device and can always be exported as a text file.
@@ -61,7 +61,7 @@ Data flow: `NotesApp → useNotes(repo) → NoteRepository → IndexedDB`
 | Markdown preview (Edit/Preview button) | 0.2.0 |
 | Markdown syntax highlighting in the editor | 0.3.0 |
 | Markdown tables (preview + editor highlighting) | 0.4.0 |
-| Import `.md` / `.txt` files as notes | next |
+| Import `.md` / `.txt` files as notes | 0.5.0 |
 
 ## 8. Roadmap (ideas for next features)
 Ideas are also tracked as GitHub issues labelled `enhancement`.
