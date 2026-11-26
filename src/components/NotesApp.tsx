@@ -2,16 +2,19 @@
 
 import { useMemo, useRef, useState } from "react";
 import { useNotes } from "@/hooks/useNotes";
+import { useSync } from "@/hooks/useSync";
 import { exportAll } from "@/lib/export";
 import { IMPORT_ACCEPT, IMPORT_MAX_BYTES, parseImported, type NoteDraft } from "@/lib/import";
 import { ExportMenu } from "./ExportMenu";
 import { NoteEditor } from "./NoteEditor";
 import { NoteList } from "./NoteList";
+import { SyncMenu } from "./SyncMenu";
 
 const VERSION = process.env.NEXT_PUBLIC_APP_VERSION;
 
 export function NotesApp() {
-  const { notes, loading, create, importNotes, update, remove } = useNotes();
+  const { notes, loading, create, importNotes, update, remove, applyRemote } = useNotes();
+  const sync = useSync(applyRemote);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
 
@@ -103,8 +106,15 @@ export function NotesApp() {
             <NoteList notes={filtered} selectedId={selectedId} onSelect={setSelectedId} />
           )}
         </div>
-        <footer className="px-4 py-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] text-[11px] text-muted">
-          v{VERSION}
+        <footer className="flex items-center gap-2 px-2 py-1 pb-[max(env(safe-area-inset-bottom),0.25rem)] text-[11px] text-muted">
+          <SyncMenu
+            status={sync.status}
+            email={sync.email}
+            onSignIn={sync.signIn}
+            onSignOut={sync.signOut}
+            onSyncNow={sync.syncNow}
+          />
+          <span className="px-2">v{VERSION}</span>
         </footer>
       </aside>
 

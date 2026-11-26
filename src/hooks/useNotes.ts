@@ -79,5 +79,24 @@ export function useNotes(repo: NoteRepository = indexedDbRepo) {
     [repo, setNotes],
   );
 
-  return { notes, loading, create, importNotes, update, remove };
+  /**
+   * Apply notes that sync wrote to IndexedDB. Per note, last write wins, so
+   * an edit still in flight in the editor is never replaced by an older copy.
+   */
+  const applyRemote = useCallback(
+    (changed: Note[]) => {
+      if (changed.length === 0) return;
+      const byId = new Map(notesRef.current.map((n) => [n.id, n]));
+      for (const r of changed) {
+        const local = byId.get(r.id);
+        if (local && local.updatedAt >= r.updatedAt) continue;
+        if (r.deletedAt) byId.delete(r.id);
+        else byId.set(r.id, r);
+      }
+      setNotes([...byId.values()].sort(byUpdatedDesc));
+    },
+    [setNotes],
+  );
+
+  return { notes, loading, create, importNotes, update, remove, applyRemote };
 }

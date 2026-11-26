@@ -10,6 +10,12 @@ Add every user-visible change under `## [Unreleased]`. Reference the issue when 
 
 ## [Unreleased]
 
+### Added
+- Optional cross-device sync with Supabase: sign in with an email link from "ซิงค์ข้ามอุปกรณ์" at the bottom of the note list and notes sync between devices. The app still works offline and fully local without signing in (#3)
+
+### Changed
+- Deleting a note now keeps an empty record (no title or text) so the deletion can sync to other devices. Existing notes upgrade automatically (#3)
+
 ## [0.5.0] - 2026-11-11
 
 ### Added

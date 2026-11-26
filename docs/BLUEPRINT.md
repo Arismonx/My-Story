@@ -1,7 +1,7 @@
 # My Story – App Blueprint
 
 > The foundation document for the app. Read it before designing or adding any feature, and update it whenever what it describes changes.
-> Last updated: 2026-11-11 · App version: 0.5.0
+> Last updated: 2026-11-26 · App version: 0.5.0
 
 ## 1. What this app is
 A personal journal for daily stories that works on desktop and mobile. Data stays on the user's device and can always be exported as a text file.
@@ -23,6 +23,7 @@ A personal journal for daily stories that works on desktop and mobile. Data stay
 | Framework | Next.js 16 (App Router, static export) | Read `node_modules/next/dist/docs/` first, the API has changed |
 | UI | React 19 + Tailwind CSS v4 | Colors live in CSS variables in `globals.css` |
 | Storage | IndexedDB (`src/lib/db.ts`) | Behind the `NoteRepository` interface |
+| Sync (optional) | Supabase Postgres + Auth via `@supabase/supabase-js` (browser only) | Off unless `NEXT_PUBLIC_SUPABASE_URL` / `_ANON_KEY` are set at build time. Schema + RLS in `supabase/schema.sql` |
 | Mobile | PWA (`manifest.ts` + `public/sw.js`) | |
 | Hosting | GitHub Pages via Actions | `NEXT_PUBLIC_BASE_PATH=/<repo>` |
 | Runtime | Node 22 (`.nvmrc`) | |
@@ -35,9 +36,14 @@ Note {
   content: string   // Markdown (rendered by the "Preview" button)
   createdAt: string // ISO 8601, when the note was written
   updatedAt: string // ISO 8601, last edit
+  deletedAt?: string // ISO 8601, tombstone: title/content cleared, hidden by list()
+  dirty?: boolean    // local only: not pushed to the server yet
 }
 ```
-IndexedDB: database `my-story` · store `notes` (keyPath `id`, index `updatedAt`) · `DB_VERSION = 1`
+IndexedDB: database `my-story` · store `notes` (keyPath `id`, index `updatedAt`) · `DB_VERSION = 2`
+- v2 (next): optional `deletedAt` / `dirty`, no data rewrite. `remove()` writes a tombstone instead of deleting.
+
+Supabase table `notes` mirrors the fields in snake_case plus `user_id` (RLS: own rows only) and `synced_at` (server time, the pull cursor). A trigger skips any update whose `updated_at` is not newer (last write wins).
 Changing the schema → bump `DB_VERSION` and write a migration in `onupgradeneeded`. Never lose existing notes.
 
 ## 6. Code structure
@@ -45,10 +51,15 @@ Changing the schema → bump `DB_VERSION` and write a migration in `onupgradenee
 src/
   app/            layout, page, manifest (server components, static)
   components/     NotesApp (main state), NoteList, NoteEditor, MarkdownTextarea, Markdown, ExportMenu, RegisterSW
-  hooks/useNotes  CRUD + state, takes a NoteRepository as a parameter
-  lib/            types, db (IndexedDB), export (md/txt), import (md/txt → note), format (Thai dates)
+  components/     … + SyncMenu (sign-in + sync status, in the list footer)
+  hooks/useNotes  CRUD + state, takes a NoteRepository as a parameter; applyRemote merges synced notes
+  hooks/useSync   Supabase session, sync triggers (sign-in, focus, online, 2 s after a local edit)
+  lib/            types, db (IndexedDB), export (md/txt), import (md/txt → note), format (Thai dates),
+                  supabase (client, off when unconfigured), sync (push dirty → pull since cursor → merge)
+supabase/schema.sql  table, trigger, RLS policies (run once in the Supabase SQL editor)
 ```
 Data flow: `NotesApp → useNotes(repo) → NoteRepository → IndexedDB`
+Sync flow: `useSync → lib/sync ↔ IndexedDB (dirty notes) ↔ Supabase` → `useNotes.applyRemote`
 
 ## 7. Existing features
 | Feature | Version |
@@ -62,6 +73,7 @@ Data flow: `NotesApp → useNotes(repo) → NoteRepository → IndexedDB`
 | Markdown syntax highlighting in the editor | 0.3.0 |
 | Markdown tables (preview + editor highlighting) | 0.4.0 |
 | Import `.md` / `.txt` files as notes | 0.5.0 |
+| Optional cross-device sync (Supabase, email magic link) | next |
 
 ## 8. Roadmap (ideas for next features)
 Ideas are also tracked as GitHub issues labelled `enhancement`.
@@ -70,7 +82,6 @@ Ideas are also tracked as GitHub issues labelled `enhancement`.
 - [ ] Backup/restore as JSON (protects against clearing the browser)
 - [ ] Light/dark theme toggle
 - [ ] Calendar view of notes by day
-- [ ] Cross-device sync with Postgres (Supabase): `SupabaseRepo implements NoteRepository` + Auth
 - [ ] Attach images (stored as Blobs in IndexedDB)
 
 ## 9. Decision log
@@ -83,4 +94,8 @@ Ideas are also tracked as GitHub issues labelled `enhancement`.
 | 2026-11-08 | Editor highlighting via a transparent textarea over an overlay, bold via `.md-bold` (text-stroke) instead of font-weight | Real font-weight changes glyph width and misaligns the caret |
 | 2026-11-11 | Tables are parsed in our own `Markdown.tsx` (GFM syntax, wide tables scroll inside their own container) | Keeps the no-dependency renderer; `content` stays plain Markdown so no migration |
 | 2026-11-11 | Imported notes get "now" as created/updated time, one note per file | Predictable: they appear at the top of the list instead of vanishing into the past |
+| 2026-11-26 | Sync is local-first: IndexedDB stays the UI's source, Supabase is a remote copy synced in the background (not a `SupabaseRepo` swap) | Keeps offline use and instant UI (principle 1); signing in stays optional |
+| 2026-11-26 | Last write wins by `updatedAt`, enforced by a server trigger; pull cursor is server `synced_at` | One user on a few devices rarely edits the same note at once; server time avoids missed rows from skewed device clocks |
+| 2026-11-26 | Deletes are tombstones with title/content cleared | A hard delete cannot reach other devices; clearing the text keeps deleted content off the server |
+| 2026-11-26 | Email magic link auth, `@supabase/supabase-js` as the first runtime dependency | Works from a static site, no passwords to manage |
 | 2026-11-08 | Documentation in English; bugs and feature requests tracked as GitHub issues (replaces `docs/BUGS.md`) | Open the project to outside contributors |
