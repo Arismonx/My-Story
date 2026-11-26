@@ -1,7 +1,7 @@
 # My Story – App Blueprint
 
 > The foundation document for the app. Read it before designing or adding any feature, and update it whenever what it describes changes.
-> Last updated: 2026-11-26 · App version: 0.5.0
+> Last updated: 2026-11-27 · App version: 0.6.0
 
 ## 1. What this app is
 A personal journal for daily stories that works on desktop and mobile. Data stays on the user's device and can always be exported as a text file.
@@ -41,7 +41,7 @@ Note {
 }
 ```
 IndexedDB: database `my-story` · store `notes` (keyPath `id`, index `updatedAt`) · `DB_VERSION = 2`
-- v2 (next): optional `deletedAt` / `dirty`, no data rewrite. `remove()` writes a tombstone instead of deleting.
+- v2 (0.6.0): optional `deletedAt` / `dirty`, no data rewrite. `remove()` writes a tombstone instead of deleting.
 
 Supabase table `notes` mirrors the fields in snake_case plus `user_id` (RLS: own rows only) and `synced_at` (server time, the pull cursor). A trigger skips any update whose `updated_at` is not newer (last write wins).
 Changing the schema → bump `DB_VERSION` and write a migration in `onupgradeneeded`. Never lose existing notes.
@@ -73,7 +73,7 @@ Sync flow: `useSync → lib/sync ↔ IndexedDB (dirty notes) ↔ Supabase` → `
 | Markdown syntax highlighting in the editor | 0.3.0 |
 | Markdown tables (preview + editor highlighting) | 0.4.0 |
 | Import `.md` / `.txt` files as notes | 0.5.0 |
-| Optional cross-device sync (Supabase, email magic link) | next |
+| Optional cross-device sync (Supabase, email magic link) | 0.6.0 |
 
 ## 8. Roadmap (ideas for next features)
 Ideas are also tracked as GitHub issues labelled `enhancement`.

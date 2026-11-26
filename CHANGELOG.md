@@ -10,6 +10,8 @@ Add every user-visible change under `## [Unreleased]`. Reference the issue when 
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-11-27
+
 ### Added
 - Optional cross-device sync with Supabase: sign in with an email link from "ซิงค์ข้ามอุปกรณ์" at the bottom of the note list and notes sync between devices. The app still works offline and fully local without signing in (#3)
 
